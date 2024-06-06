@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  sql:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: sql_server2022
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=myStong_Password123#
+    volumes:
+      - sql_data:/var/opt/mssql
+  tripplanner-api:
+    depends_on:
+      - sql
+    image: ${DOCKER_REGISTRY-}tripplannerapi
+    build:
+      context: ./
+      dockerfile: ./Back-end/TripPlanner.API/Dockerfile
+    ports:
+      - "5000:80"
+
+volumes:
+  sql_data:

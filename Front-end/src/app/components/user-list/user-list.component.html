@@ -1,0 +1,81 @@
+<div class="container mx-auto pt-24 md:pl-64">
+    <div
+    class="rounded p-4 mb-4 text-lg bg-red-200 text-red-800 border-2 border-red-300"
+    *ngIf="errorMessage"
+  >
+    {{ errorMessage }}
+  </div>
+
+  <section class="mb-4">
+    <div class="flex justify-between">
+      <div>
+        <h1 class="text-3xl text-white text-bold">Users</h1>
+        <hr class="mt-3 w-14 border-custom-orange border" />
+      </div>
+      <a href="https://auth0.com">
+      <button
+        class="px-4 py-2 rounded-md bg-custom-orange hover:bg-custom-orange-hover text-white"
+      >
+        Auth0
+      </button></a>
+    </div>
+  </section>
+
+  <div *ngIf="isLoading">
+    <app-page-loader></app-page-loader>
+  </div>
+  <div *ngIf="!isLoading">
+    <!-- Table for larger screens -->
+  <section class="overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 hidden md:block">
+    <pagination-controls class="my-pagination bg-custom-lighter-background pt-5" (pageChange)="p = $event"></pagination-controls>
+    <div class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200">
+      <table class="min-w-full">
+        <thead class="bg-custom-lighter-background">
+          <tr>
+            <th 
+                class="px-6 py-3 text-lg font-medium text-left text-white border-b border-gray-200">
+                Name
+            </th>
+            <th
+                class="px-6 py-3 text-lg font-medium text-left text-white border-b border-gray-200">
+                Email
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="bg-custom-table-data">
+          <tr *ngFor="let user of users | paginate: { itemsPerPage: 10, currentPage: p }">
+            <td class="px-6 py-4 border-b border-gray-200">
+              <div class="flex items-center text-white">
+                {{ user.name }}
+              </div>
+            </td>
+
+            <td class="px-6 py-4 border-b border-gray-200">
+              <div class="text-sm text-white">{{ user.email }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+    <!-- Cards for smaller screens -->
+    <section class="md:hidden flex flex-wrap">
+      <div *ngFor="let user of users" class="w-full">
+        <div class="m-2 p-4 border rounded shadow">
+          <h2 class="text-3xl font-bold mb-2 text-white">{{ user.name }}</h2>
+          <div class="mt-4 flex justify-between">
+            <div
+              
+              
+              class="text-xl font-bold mb-2 emailsmall"
+            >
+            {{ user.email }}
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

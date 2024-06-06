@@ -1,0 +1,9 @@
+<div>
+<h2 class="text-2xl text-green-400">Cities in Belgium</h2>
+    <ul>
+      <li class="text-green-400" *ngFor="let city of cities">{{ city.name }}, {{ city.country }} ({{ city.adminName }})</li>
+    </ul>
+</div>
+<app-autocomplete></app-autocomplete>
+<h2 class="text-2xl text-green-400">Forecast Kontich</h2>
+<app-forecastcard [city]="'Kontich'"></app-forecastcard>

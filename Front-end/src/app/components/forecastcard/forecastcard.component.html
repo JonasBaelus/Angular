@@ -1,0 +1,49 @@
+<!-- Forecast Cards for 16-day minus today Forecast -->
+<div class="info flex space-x-4 overflow-x-auto">
+    <ng-container *ngIf="forecastList && forecastList.length > 0 && forecastList[0]?.name !== undefined">
+        <app-weathercard [city]="forecastList[0]?.name"></app-weathercard>
+    </ng-container>
+    <div *ngFor="let forecast of forecastList" class="flex-shrink-0 bg-custom-table-data text-white p-4 pt-2 rounded-lg shadow-md w-[200px] mt-6">
+    <ng-container *ngIf="forecastList && forecastList.length > 0">
+
+    <!-- Center the DayOfWeek, weather icon, and description -->
+    <div class="flex flex-col items-center">
+        <h3 class="font-semibold">{{ forecast.dayOfWeek }} {{ formatDate(forecast.date) }}</h3>
+        <!-- Display the icon based on the mapped icon code of the forecast -->
+        <fa-icon matTooltip="{{ forecast.description }}" matTooltipPosition="above" class="fa-3x mb-1" *ngIf="forecast.icon" [icon]="forecast.icon"></fa-icon>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 text-sm">
+        <!-- Display temperature and min temperature of the forecast -->
+        <div matTooltip="temperature" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faTemperature"></fa-icon>
+        <span class="font-semibold">{{ forecast.temp }} °C</span>
+        </div>
+
+        <div matTooltip="minimum temperature" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faTemperatureArrowDown"></fa-icon>
+        <span class="font-semibold">{{ forecast.mintemp }} °C</span>
+        </div>
+
+        <!-- Display humidity and max temperature of the forecast -->
+        <div matTooltip="humidity" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faDroplet"></fa-icon>
+        <span class="font-semibold">{{ forecast.humidity }}%</span>
+        </div>
+
+        <div matTooltip="maximum temperature" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faTemperatureArrowUp"></fa-icon>
+        <span class="font-semibold">{{ forecast.maxtemp }} °C</span>
+        </div>
+    </div>
+
+    <!-- Display wind information of the forecast -->
+    <div class="flex justify-between mt-2 items-center text-sm">
+        <fa-icon matTooltip="wind speed/degree" matTooltipPosition="above" [icon]="faWind"></fa-icon>
+        <span matTooltip="wind speed" matTooltipPosition="above" class="font-semibold ml-1">{{ forecast.windspeed }} m/s</span>
+        <!-- We add 135 to the winddegree because the Font Awesome icon is tilted by default 45 degrees to the right + 180 degrees so we can flip and point to the direction the wind is going -->
+        <fa-icon matTooltip="wind degree {{ forecast.winddegree }}°" matTooltipPosition="above" [icon]="faLocationArrow" class="fa-rotate-by" style="--fa-rotate-angle: {{ forecast.winddegree + 135 }}deg;"></fa-icon>
+    </div>
+
+    </ng-container>
+</div>

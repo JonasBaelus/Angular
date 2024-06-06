@@ -1,0 +1,25 @@
+<section>
+    <div class="lg:py-8 mt-2 px-4 mx-auto max-w-screen-md">
+      <h1 class="text-4xl tracking-tight font-bold text-center text-white">Contact Us</h1>
+      <hr class="my-3 w-14 border-custom-orange border mx-auto">
+      <p class="mb-8 lg:mb-16 font-light text-center text-custom-grey-text sm:text-xl">Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.</p>
+      <form (ngSubmit)="submitForm()" class="space-y-8">
+        <div>
+          <label for="email" class="block mb-2 text-sm font-medium text-white">Email</label>
+          <input type="email" id="email" name="email" class="block p-3 w-full text-sm bg-custom-lighter-background rounded-lg border shadow-sm focus:ring-primary-500 focus:border-primary-500 border-gray-600 placeholder-gray-400 text-white focus:ring-primary-500 focus:border-primary-500 shadow-sm-light" placeholder="Your email" required [(ngModel)]="email" #emailInput="ngModel">
+          <!-- Display an error message if email is invalid -->
+          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="text-red-500 text-sm mt-2">Invalid email address</div>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="message" class="block mb-2 text-sm font-medium text-white">Your message</label>
+          <textarea id="message" name="message" rows="6" class="block p-2.5 w-full text-sm bg-custom-lighter-background rounded-lg shadow-sm border focus:ring-primary-500 focus:border-primary-500 border-gray-600 placeholder-gray-400 text-white focus:ring-primary-500 focus:border-primary-500" placeholder="Leave a comment..." required [(ngModel)]="message" #messageInput="ngModel"></textarea>
+          <!-- Display an error message if message is empty -->
+          <div *ngIf="messageInput.invalid && (messageInput.dirty || messageInput.touched)" class="text-red-500 text-sm mt-2">Message is required</div>
+        </div>
+        <button type="submit" [disabled]="emailInput.invalid || messageInput.invalid" class="px-4 py-2 rounded-md bg-custom-orange hover:bg-custom-orange-hover text-white">Send message</button>
+      </form>
+    </div>
+    <app-toast *ngIf="showSuccessToast" [showSuccessToast]="showSuccessToast" [message]="successMessage"></app-toast>
+  <app-toast *ngIf="showErrorToast" [showErrorToast]="showErrorToast" [message]="errorMessage"></app-toast>
+  </section>
+  

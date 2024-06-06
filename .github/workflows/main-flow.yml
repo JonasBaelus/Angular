@@ -1,0 +1,70 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  back-end:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and Deploy Backend
+        run: |
+          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yml up -d
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+      
+      - name: Install Okteto CLI
+        run: |
+          curl https://get.okteto.com -sSfL | sh
+
+      - name: Set context to Okteto Cloud
+        uses: okteto/context@latest
+        with:
+          token: ${{ secrets.OKTETO_TOKEN }}
+      
+      - name: Build to Okteto Cloud
+        uses: okteto/build@latest 
+        with: 
+          tag: myapp-backend:latest 
+          file: ./docker-compose.yml 
+      
+      - name: Deploy to Okteto Cloud
+        run: |
+          okteto context use https://cloud.okteto.com
+          okteto deploy
+        env:
+          OKTETO_TOKEN: ${{ secrets.OKTETO_TOKEN }}
+  
+  front-end:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./Front-end
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: "18.17.1"
+      
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Firebase
+        run: |
+          npm install -g firebase-tools
+          firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}

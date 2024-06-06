@@ -1,0 +1,42 @@
+<div class="md:bg-custom-lighter-background flex flex-col h-screen fixed z-50">
+    <!-- Burger menu icon and expanded sidebar container -->
+    <div [ngClass]="{'bg-custom-lighter-background': isSidebarExpanded}" class="flex flex-col h-screen">
+        <!-- Burger menu icon for small screens -->
+        <div class="md:hidden p-4 pr-0 cursor-pointer" (click)="toggleSidebar()">
+            <fa-icon [icon]="isSidebarExpanded ? faTimes : faBars" class="text-white text-3xl"></fa-icon>
+        </div>
+
+        <!-- Sidebar navigation for medium screens and above -->
+        <nav [ngClass]="{'hidden': !isSidebarExpanded, 'block': isSidebarExpanded}" class="p-10 flex-shrink-0 md:block">
+            <a href="#" class="block">
+                <img class="cursor-pointer" src="assets/logo.png" alt="logo" style="width: 100%;">
+            </a>
+            <ul class="flex flex-col text-lg gap-4 mt-20">
+                <li>
+                    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="text-custom-nav-text hover:text-white">
+                        <fa-icon [icon]="faHome"></fa-icon> Home
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/admin/category" routerLinkActive="active" class="text-custom-nav-text hover:text-white">
+                        <fa-icon [icon]="faTag"></fa-icon> Categories
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/admin/activity" routerLinkActive="active" class="text-custom-nav-text hover:text-white">
+                        <fa-icon [icon]="faPersonHiking"></fa-icon> Activities
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/admin/users" routerLinkActive="active" class="text-custom-nav-text hover:text-white">
+                        <fa-icon [icon]="faUser"></fa-icon> Users
+                    </a>
+                </li>
+                <a href="#" (click)="authService.logout()"
+            class="text-center block py-2 px-4 bg-custom-orange text-white rounded-lg hover:bg-custom-orange-hover">
+            <i class="fas fa-user-plus mr-2"></i>Log out
+          </a>
+            </ul>
+        </nav>
+    </div>
+</div>

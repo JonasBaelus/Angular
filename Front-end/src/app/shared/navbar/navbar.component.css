@@ -1,0 +1,39 @@
+nav a.active {
+  color: white;
+  font-weight: bold;
+}
+
+.overlay {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.overlay.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lock-screen {
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  position: fixed;
+}
+
+.action .menu.active {
+  top: 80px;
+  visibility: visible;
+  opacity: 1;
+}
+
+.action .menu::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: #242433;
+  transform: rotate(45deg);
+}

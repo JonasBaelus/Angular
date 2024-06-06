@@ -1,0 +1,31 @@
+<section
+    class="fixed overflow-auto bottom-0 w-full max-h-80vh md:top-[10%] md:right-0 z-40 md:w-80 md:h-screen transition-transform bg-custom-lighter-background overflow-auto info opacity-90"
+  >
+    <h1 class="text-white font-bold text-xl m-2">{{ trip!.name }}</h1>
+    <hr />
+    <h2 class="text-white font-bold text-xl m-2">Activities</h2>
+    <ul class="text-white m-2">
+      @for (date of datesWithActivities; track date) {
+      <li>
+        <p>{{ date | date : "dd/MM/yyyy" }}</p>
+        <ul>
+          @for (activity of trip!.activities; track activity.tripActivityId) {
+          @if ((activity.startDate | date: 'dd/MM/yyyy') === (date | date:
+          'dd/MM/yyyy')) {
+          <li>
+            <p>
+              <span class="pr-1"
+                ><fa-icon
+                  class="fa-solid text-gray-400 fa-xs"
+                  [icon]="faCircle"
+                ></fa-icon></span
+              >{{ activity.name }} ({{ activity.startDate | date : "HH:mm" }} -
+              {{ activity.endDate | date : "HH:mm" }})
+            </p>
+          </li>
+          } }
+        </ul>
+      </li>
+      }
+    </ul>
+  </section>

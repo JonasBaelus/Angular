@@ -1,0 +1,19 @@
+<div class="autocomplete relative">
+    <label for="autocomplete" class="block mb-2 text-sm font-medium text-white">TRIP CITY (optional)</label>
+    <div class="flex">
+        <span
+        class=" w-[48px] h-[42px] inline-flex items-center px-3 text-sm text-gray-90 border rounded-e-0 rounded-s-md bg-gray-600 text-gray-400 border-gray-600">
+        <svg class="w-6 h-6 text-[#22272d]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 1h12M3 1v16M3 1H2m13 0v16m0-16h1m-1 16H3m12 0h2M3 17H1M6 4h1v1H6V4Zm5 0h1v1h-1V4ZM6 8h1v1H6V8Zm5 0h1v1h-1V8Zm-3 4h2a1 1 0 0 1 1 1v4H7v-4a1 1 0 0 1 1-1Z"/>
+        </svg>
+        </span>
+        <input [(ngModel)]="cityInput" name="name" #name="ngModel" required type="text" id="autocomplete" (input)="onCityInput()"
+        class="rounded-none rounded-e-lg border block flex-1 min-w-0 w-full text-sm p-2.5  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:outline-none"
+        placeholder="Enter city">
+        <div class="dropdown absolute top-full left-0 w-full bg-[#22272d] text-white border border-gray-300 max-h-40 overflow-y-auto z-10" *ngIf="cities.length > 0">
+            <option *ngIf="cities[0]?.name" [value]="cities[0]" class="p-2 transition-all hover:bg-gray-900 hover:text-white" (click)="selectCity(cities[0])">
+              {{ cities[0]?.name }}, {{ cities[0]?.country }}<span *ngIf="cities[0]?.adminName"> ({{ cities[0]?.adminName }})</span>
+            </option>
+        </div>                
+    </div>
+</div>

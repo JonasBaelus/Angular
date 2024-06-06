@@ -1,0 +1,381 @@
+<main class="mx-auto container">
+    <h1 class="text-3xl lg:text-4xl font-bold text-white mb-6">Your trips</h1>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Add trip card -->
+        <div routerLink="/getstarted" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            class="hover:bg-gray-600 cursor-pointer rounded-lg shadow-md hover:shadow-lg p-6 bg-custom-lighter-background md:h-[208px] flex items-center justify-center">
+            <div>
+                <h3 class="text-white text-center">
+                    <fa-icon [icon]="faPlus" class="text-3xl"></fa-icon>
+                </h3>
+                <p class="text-white text-center">
+                    Add trip
+                </p>
+            </div>
+        </div>
+
+        @if (isLoading) {
+        <app-page-loader></app-page-loader>
+        }
+
+        <!-- User trip cards -->
+        @for (trip of allTripsFromUser; track $index) {
+        <div (click)="navigateToTrip(trip.tripId)"
+            class="relative group hover:bg-gray-600 cursor-pointer rounded-lg shadow-md hover:shadow-lg bg-custom-lighter-background h-[208px] p-4">
+
+            <div>
+                <h2 class="text-white font-bold text-xl mb-2">{{trip.name}}</h2>
+                <!-- Location -->
+                <div *ngIf="trip.country">
+                    <span class="text-gray-400 text-sm">Location: </span> 
+                    <span class="text-white text-sm">{{trip.city}} ({{trip.country}})</span>
+                </div>
+                <!-- Start and End Date -->
+                <div>
+                    <div>
+                        <span class="text-gray-400 text-sm">Starts: </span>
+                        <span class="text-white text-sm">{{trip.startDate | date:'MMM d, yyyy'}}</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-400 text-sm">Ends: </span>
+                        <span class="text-white text-sm">{{trip.endDate | date:'MMM d, yyyy'}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 p-4">
+                <div class="flex -space-x-4 rtl:space-x-reverse">
+                    <ng-container *ngFor="let contributor of contributorsMap[trip.tripId]?.slice(0, 3); let i = index">
+                        <img class="w-10 h-10 border-2 rounded-full border-gray-800" [src]="contributor?.picture"
+                            alt="">
+                    </ng-container>
+
+                    <!-- Display the count of additional contributors if there are more than three -->
+                    <ng-container
+                        *ngIf="contributorsMap[trip.tripId]?.length && contributorsMap[trip.tripId].length > 3">
+                        <a (click)="shareModal(trip.tripId); $event.stopPropagation()"
+                            class="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800">
+                            +{{ contributorsMap[trip.tripId].length - 3 }}
+                        </a>
+                    </ng-container>
+                </div>
+
+                <!-- <div class="flex -space-x-4 rtl:space-x-reverse" *ngFor="let trip of allTripsFromUser">
+                    <img class="w-10 h-10 border-2 rounded-full border-gray-800"
+                        *ngFor="let contributor of contributorsMap[trip.tripId]" [src]="contributor.picture" alt="">
+                </div> -->
+                <!-- <div class="flex -space-x-4 rtl:space-x-reverse">
+                    @for (contributor of this.fetchContributors(trip.tripId); track $index) {
+                    <img class="w-10 h-10 border-2 rounded-full border-gray-800" [src]="contributor.picture" alt="">
+                    }
+                </div> -->
+
+            </div>
+
+            <!-- Invite More People Button (Top-Right Corner) -->
+            <button (click)="shareModal(trip.tripId); $event.stopPropagation()"
+                class="absolute p-4 top-0 right-0 flex items-center text-white cursor-pointer hover:underline">
+                <fa-icon class="mr-2" [icon]="faUsers"></fa-icon>
+                Add People
+            </button>
+
+            <!-- Edit Button/Pencil Icon -->
+            <div class="absolute bottom-0 right-0 p-4 flex gap-2">
+                <button (click)="editModal(trip.tripId); $event.stopPropagation()"
+                    class="bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 focus:outline-none">
+                    <fa-icon class="p-1" [icon]="faPencil"></fa-icon>
+                </button>
+
+                <!-- Delete Button/Trash Icon -->
+                <button (click)="showModal(trip.tripId); $event.stopPropagation()"
+                    class=" bg-red-500 p-2 text-white rounded-full  hover:bg-red-600 focus:outline-none">
+                    <fa-icon class="p-1" [icon]="faTrash"></fa-icon>
+                </button>
+            </div>
+        </div>
+
+
+        }
+        @if (allTripsFromUser.length === 0 && !isLoading) {
+        <div class="text-gray-500 text-xl font-semibold">
+            No trips found for the user.
+        </div>
+        }
+
+        <div id="popup-modal" [ngClass]="{'block' : warning, 'hidden' : !warning}"
+            class="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-black bg-opacity-25 z-50">
+
+            <div class="relative rounded-lg shadow bg-gray-700 w-full max-w-md">
+                <button type="button" (click)="hideModal()"
+                    class="absolute top-3 end-2.5 text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white"
+                    data-modal-hide="popup-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 w-12 h-12 text-gray-200" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-400">
+                        Are you sure you want to delete this trip?
+                    </h3>
+                    <button (click)="deleteTrip()" data-modal-hide="popup-modal" type="button"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                        Yes, I'm sure
+                    </button>
+                    <button data-modal-hide="popup-modal" type="button" (click)="hideModal()"
+                        class="focus:ring-4 focus:outline-none rounded-lg border text-sm font-medium px-5 py-2.5 focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">
+                        No, cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="share-modal" [ngClass]="{'block' : share, 'hidden' : !share}"
+            class="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-black bg-opacity-25 z-50">
+
+            <div class="relative rounded-lg shadow bg-gray-700 w-full max-w-xl">
+
+                <div class="flex items-center justify-between px-4 py-3 md:px-5">
+                    <h2 class="text-xl text-gray-400">Invite people</h2>
+
+                    <button type="button" (click)="hideModal()"
+                        class="text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center hover:bg-gray-600 hover:text-white"
+                        data-modal-hide="popup-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+
+                <div class="px-4 py-3 md:px-5 text-center">
+                    <!-- user-search.component.html -->
+
+                    <form class="mb-5">
+                        <label for="default-search" class="mb-2 text-sm font-medium sr-only text-white">Search</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                </svg>
+                            </div>
+                            <input type="text" id="default-search" [(ngModel)]="searchTerm" name="users"
+                                (keyup)="updateFilter($event)"
+                                class="block w-full p-4 ps-10 text-sm border rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:outline-none"
+                                placeholder="Search users" required>
+
+                            <!-- Styled dropdown list using Tailwind CSS classes -->
+                            <div *ngIf="filteredUsers.length > 0"
+                                class="absolute mt-1 w-full bg-custom-lighter-background shadow-lg">
+                                <ul class="py-1">
+                                    <li *ngFor="let user of filteredUsers; let i = index"
+                                        class="flex justify-between gap-x-6 py-2 px-2">
+                                        <div class="flex min-w-0 gap-x-4">
+                                            <img class="h-10 w-10 flex-none rounded-full bg-gray-50"
+                                                [src]="user.picture" alt="">
+                                            <div class="min-w-0 flex-auto">
+                                                <p class="text-left text-md font-semibold leading-6 text-gray-300">
+                                                    {{user.name}}</p>
+                                                <p class="text-left truncate text-sm leading-5 text-gray-400">
+                                                    {{user.email}}</p>
+                                            </div>
+                                        </div>
+                                        <button (click)="sendEmail(user)"
+                                            class="bg-gray-500 text-white px-2 py-1 text-md rounded-md hover:bg-gray-600 focus:outline-none">
+                                            Send Invite
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </form>
+
+
+                    <div>
+                        <h2 class="text-left text-gray-400">Contributors</h2>
+
+                        @for (user of contributorsMap[tripId]; track $index) {
+                        <ul role="list" class="">
+                            <li class="flex justify-between gap-x-6 py-2">
+                                <div class="flex min-w-0 gap-x-4">
+                                    <img class="h-10 w-10 flex-none rounded-full bg-gray-50" src="{{user.picture}}"
+                                        alt="">
+                                    <div class="min-w-0 flex-auto">
+                                        <p class="text-left text-md font-semibold leading-6 text-gray-300">
+                                            {{user.name}}
+                                        </p>
+                                        <p class="text-left truncate text-sm leading-5 text-gray-400">
+                                            {{user.email}}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-modal" [ngClass]="{'block' : edit, 'hidden' : !edit}"
+            class="fixed top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-black bg-opacity-25 z-50">
+
+            <div class="relative rounded-lg shadow bg-gray-700 w-full max-w-md">
+                <div class="flex items-center justify-between px-4 py-3 md:px-5">
+                    <h2 class="text-xl text-gray-400">Edit trip</h2>
+
+                    <button type="button" (click)="hideModal()"
+                        class="text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center hover:bg-gray-600 hover:text-white"
+                        data-modal-hide="popup-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+
+                <div class="px-4 py-3 md:px-5 text-center">
+                    <!-- Step 1: Name -->
+                    <form (ngSubmit)="updateTrip()" #tripForm="ngForm">
+                        <label for="trip-name" class="text-left block mb-2 text-sm font-medium text-white">TRIP
+                            NAME</label>
+                        <div class="flex">
+                            <span
+                                class=" w-[48px] h-[42px] inline-flex items-center px-3 text-sm text-gray-90 border rounded-e-0 rounded-s-md bg-gray-600 text-gray-400 border-gray-600">
+                                <!-- New SVG -->
+                                <svg class="w-10 h-10 text-[#22272d]" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
+                                </svg>
+                            </span>
+                            <input [(ngModel)]="tripName" name="name" #name="ngModel" required type="text"
+                                id="trip-name"
+                                class="rounded-none rounded-e-lg border block flex-1 min-w-0 w-full text-sm p-2.5  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:outline-none"
+                                placeholder="Enter your trip name">
+                        </div>
+                        <div *ngIf="name.invalid && tripFormSubmitted" class="text-left text-red-500 mt-2">
+                            <div *ngIf="name.errors && name.errors['required']">Name is required</div>
+                        </div>
+
+                        <!-- Step 1: Date -->
+                        <div class="mt-4">
+                            <label class="text-left block mb-2 text-sm font-medium text-white">START DATE - END
+                                DATE</label>
+                            <div class="overflow-hidden w-full h-[42px] text-white text-sm rounded-lg border bg-gray-700 border-gray-600 placeholder-gray-400 flex items-center"
+                                appearance="fill">
+                                <mat-datepicker-toggle class="text-gray-400 bg-gray-600" matIconSuffix
+                                    [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-input class="px-2.5" [rangePicker]="picker">
+                                    <input [(ngModel)]="startDate" name="start" #startDateInput matStartDate
+                                        placeholder="Start date" required>
+                                    <input [(ngModel)]="endDate" name="end" #endDateInput matEndDate
+                                        placeholder="End date" required>
+                                </mat-date-range-input>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+                            </div>
+
+                            <!-- HERE WE DO ERROR HANDLING -->
+                            <div class="flex items-center gap-2 mt-2">
+                                <div *ngIf="tripForm.controls['start'] && tripFormSubmitted" class="text-red-500">
+                                    <div *ngIf="
+                    tripForm.controls['start'].errors &&
+                    tripForm.controls['start'].errors['required']
+                  ">
+                                        Start date is required
+                                    </div>
+                                </div>
+                                <div *ngIf="tripForm.controls['start'] && tripFormSubmitted" class="text-red-500">
+                                    <div *ngIf="
+                tripForm.controls['start'].errors &&
+                tripForm.controls['start'].errors['required']
+              ">-
+                                    </div>
+                                </div>
+                                <div *ngIf="tripForm.controls['end'] && tripFormSubmitted" class="text-red-500">
+                                    <div *ngIf="
+                    tripForm.controls['end'].errors &&
+                    tripForm.controls['end'].errors['required']
+                  ">End date is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="text-left block mb-2 text-sm font-medium text-white">WHO CAN SEE YOUR
+                                TRIP?</label>
+                            <!-- Public Trip Radio Button -->
+                            <div class="flex items-center ml-5">
+                                <input [(ngModel)]="isShared" [value]="true" id="public-radio" type="radio"
+                                    name="sharingOption" required #publicRadio="ngModel" />
+                                <label for="public-radio" class="ml-2 text-sm font-medium text-gray-300">
+                                    Public Trip
+                                    <span class="text-gray-400">
+                                        - Visible to Everyone</span>
+                                </label>
+                            </div>
+
+                            <!-- Private Trip Radio Button -->
+                            <div class="flex items-center mt-2 ml-5">
+                                <input [(ngModel)]="isShared" [value]="false" id="private-radio" type="radio"
+                                    name="sharingOption" required #privateRadio="ngModel" />
+                                <label for="private-radio" class="ml-2 text-sm font-medium text-gray-300">
+                                    Private Trip
+                                    <span class="text-gray-400">
+                                        - Visible only to Invited Participants</span>
+                                </label>
+                            </div>
+
+                            <div *ngIf="
+                                  (publicRadio.invalid || privateRadio.invalid) &&
+                                  tripFormSubmitted
+                                " class="text-red-500 mt-2">
+                                <div *ngIf="
+                                    (publicRadio.errors && publicRadio.errors['required']) ||
+                                    (privateRadio.errors && privateRadio.errors['required'])
+                                  ">
+                                    Option is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-2 mt-4">
+                            <button data-modal-hide="popup-modal" type="button" (click)="hideModal()"
+                                class="focus:ring-4 focus:outline-none rounded-lg border text-sm font-medium px-5 py-2.5 focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">
+                                Close
+                            </button>
+                            <button (click)="updateTrip()" data-modal-hide="popup-modal" type="button"
+                                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="my-16 border-custom-grey-text border">
+
+    <app-toast [showSuccessToast]="isDeleted" [message]="'Trip successfully deleted!'" />
+    <app-toast [showSuccessToast]="isUpdated" [message]="'Trip successfully updated!'" />
+    <app-toast [showSuccessToast]="isSend" [message]="'Email sent successfully!'" />
+
+    <app-toast [showErrorToast]="isError" [message]="'Something went wrong!'" />
+</main>

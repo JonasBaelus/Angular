@@ -1,0 +1,172 @@
+<main>
+  <section class="relative">
+    <div class="w-full h-[350px] lg:h-[450px] xl:h-[550px] object-cover rounded-3xl">
+      <div class="parallax w-full h-full object-cover rounded-3xl"></div>
+    </div>
+    <div class="overlay absolute inset-0 bg-black opacity-50 rounded-3xl"></div>
+
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center w-full">
+      <h1 class="text-3xl sm:text-5xl md:text-6xl lg-text-7xl font-extrabold mb-4">
+        Plan Your Dream Trip
+      </h1>
+      <p class="text-base sm:text-lg mb-6">
+        Explore and create unforgettable memories in stunning places.
+      </p>
+
+      <a routerLink="/getstarted" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        class="bg-custom-orange transition duration-200 hover:bg-custom-orange-hover text-white px-10 py-4 rounded-lg shadow-lg opacity-95 text-xl md:text-xl inline-block cursor-pointer">
+        Get Started
+      </a>
+    </div>
+  </section>
+
+  <section class="my-14 lg:py-12">
+    <div class="container mx-auto">
+      <h2 class="text-3xl lg:text-4xl font-bold text-white">Popular Places</h2>
+      <hr class="my-3 w-14 border-custom-orange border" />
+      <p class="text-custom-grey-text text-lg mb-6">
+        Explore these renowned destinations loved by travelers worldwide.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="rounded-lg shadow-md hover:shadow-lg bg-custom-lighter-background">
+          <div class="overflow-hidden rounded-t-lg">
+            <img class="w-full h-64 object-cover rounded-t-lg transform hover:scale-110 transition-transform"
+              src="assets/mindanou.jpg" alt="SC. Mindanou" />
+          </div>
+          <div class="p-4">
+            <h3 class="text-xl font-bold text-white">SC. Mindanou</h3>
+            <p class="text-gray-600 flex items-center">
+              <fa-icon class="fa-lg text-custom-grey-text" [icon]="faLocation"></fa-icon>
+              <span class="ml-2 text-custom-grey-text">Mindanou, Philippines</span>
+            </p>
+          </div>
+        </div>
+        <div class="rounded-lg shadow-md hover:shadow-lg bg-custom-lighter-background">
+          <div class="overflow-hidden rounded-t-lg">
+            <img class="w-full h-64 object-cover rounded-t-lg transform hover:scale-110 transition-transform"
+              src="assets/disneyland.jpg" alt="Disneyland Tokyo" />
+          </div>
+          <div class="p-4">
+            <h3 class="text-xl font-bold text-white">Disneyland Tokyo</h3>
+            <p class="text-gray-600 flex items-center">
+              <fa-icon class="fa-lg text-custom-grey-text" [icon]="faLocation"></fa-icon>
+              <span class="ml-2 text-custom-grey-text">Tokyo, Japan</span>
+            </p>
+          </div>
+        </div>
+        <div class="rounded-lg shadow-md hover:shadow-lg bg-custom-lighter-background">
+          <div class="overflow-hidden rounded-t-lg">
+            <img class="w-full h-64 object-cover rounded-t-lg transform hover:scale-110 transition-transform"
+              src="assets/tousand.jpg" alt="Thousand Island" />
+          </div>
+          <div class="p-4">
+            <h3 class="text-xl font-bold text-white">Thousand Island</h3>
+            <p class="text-gray-600 flex items-center">
+              <fa-icon class="fa-lg text-custom-grey-text" [icon]="faLocation"></fa-icon>
+              <span class="ml-2 text-custom-grey-text">Java, Indonesia</span>
+            </p>
+          </div>
+        </div>
+        <div class="rounded-lg shadow-md hover:shadow-lg bg-custom-lighter-background">
+          <div class="overflow-hidden rounded-t-lg">
+            <img class="w-full h-64 object-cover rounded-t-lg transform hover:scale-110 transition-transform"
+              src="assets/basilika.jpg" alt="Basilika" />
+          </div>
+          <div class="p-4">
+            <h3 class="text-xl font-bold text-white">Basilika</h3>
+            <p class="text-gray-600 flex items-center">
+              <fa-icon class="fa-lg text-custom-grey-text" [icon]="faLocation"></fa-icon>
+              <span class="ml-2 text-custom-grey-text">Rome, Italy</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="my-14 lg:py-12 rounded-lg">
+    <div class="container mx-auto bg-custom-lighter-background rounded-lg relative shadow-lg">
+      <img src="https://fakeyou.com/images/landing/bg-dots.webp" alt="" class="dots-right-top hidden lg:block" />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 items-center px-6 md:px-10 py-10 md:py-20">
+        <div class="col-span-1 md:col-span-2 lg:col-span-2">
+          <h2 class="text-3xl lg:text-4xl font-bold text-white">
+            Stay In Touch
+          </h2>
+          <hr class="my-3 w-14 border-custom-orange border" />
+          <p class="text-custom-grey-text text-lg">
+            Subscribe to our newsletter and receive notifications of favorable
+            offers and news. No spam, just useful information.
+          </p>
+        </div>
+        <div class="col-span-3">
+          <div class="grid grid-cols-3">
+            <input type="text" placeholder="Enter E-Mail" class="col-span-2 w-full px-3 py-2 rounded-l-lg"
+              #emailInput />
+            <button
+              class="col-span-1 bg-custom-orange transition duration-200 hover:bg-custom-orange-hover text-white rounded-tr-lg rounded-br-lg"
+              (click)="subscribe(emailInput, emailInput.value)">
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
+      <img src="https://fakeyou.com/images/landing/bg-dots.webp" alt="" class="dots-left-bottom hidden lg:block" />
+    </div>
+  </section>
+
+  <section class="mt-14 mb-7 lg:pt-12 lg:pb-6">
+    <div class="container mx-auto">
+      <h2 class="text-3xl lg:text-4xl font-bold text-white text-center">
+        What People Say About Us
+      </h2>
+      <hr class="my-3 w-14 border-custom-orange border mx-auto" />
+      <p class="text-custom-grey-text text-lg mb-6 text-center">
+        Discover what our delighted visitors have to say about their
+        experiences.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <div class="rounded-lg shadow-md hover:shadow-lg p-6 bg-custom-lighter-background">
+          <img src="assets/profilePicture1.jpg" alt="Guest 1" class="w-20 h-20 rounded-full mx-auto object-cover" />
+          <h3 class="text-xl font-bold text-white text-center mt-4">
+            Alice Johnson
+          </h3>
+          <div class="text-yellow-400 text-center mt-2">★★★★★</div>
+          <p class="text-custom-grey-text text-center mt-4">
+            "This trip planner website is super user-friendly. It helped me plan
+            my vacation effortlessly. Thumbs up!"
+          </p>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="rounded-lg shadow-md hover:shadow-lg p-6 bg-custom-lighter-background">
+          <img src="assets/profilePicture2.jpg" alt="Guest 2" class="w-20 h-20 rounded-full mx-auto object-cover" />
+          <h3 class="text-xl font-bold text-white text-center mt-4">
+            Michael Smith
+          </h3>
+          <div class="text-yellow-400 text-center mt-2">★★★★★</div>
+          <p class="text-custom-grey-text text-center mt-4">
+            "Perfect for group trips. We all could plan together, and it
+            integrated our ideas seamlessly."
+          </p>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="rounded-lg shadow-md hover:shadow-lg p-6 bg-custom-lighter-background">
+          <div class="w-20 h-20 overflow-hidden rounded-full mx-auto">
+            <img src="assets/profilePicture3.jpg" alt="Guest 3" />
+          </div>
+          <h3 class="text-xl font-bold text-white text-center mt-4">
+            Emma Davis
+          </h3>
+          <div class="text-yellow-400 text-center mt-2">★★★★★</div>
+          <p class="text-custom-grey-text text-center mt-4">
+            "Lots of travel tips and guides on the site. It's a great resource
+            for all travelers."
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

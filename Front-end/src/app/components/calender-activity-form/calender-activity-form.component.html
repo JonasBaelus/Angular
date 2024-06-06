@@ -1,0 +1,18 @@
+@if (isSubmitted && errorMessage) {
+<div
+  class="rounded p-4 mb-8 text-lg bg-red-200 text-red-800 border-2 border-red-300"
+>
+  {{ errorMessage }}
+</div>
+
+} @if (status === "Past") {
+<app-review-activity-form [activity]="activity" (submit)="submit($event)"></app-review-activity-form>
+} @else if (status !== "Past") {
+<app-add-edit-activity-form
+  [activity]="activity"
+  [tripId]="tripId"
+  [mode]="mode"
+  [date]="date"
+  (submit)="submit($event)"
+></app-add-edit-activity-form>
+}

@@ -1,0 +1,72 @@
+<h1 class="text-custom-orange text-4xl mb-8 text-center">
+  <span class="hidden md:block">
+    Edit the activity: {{ activity.name }} ({{
+      activity.startDate | date : "dd MMM yyyy"
+    }})
+  </span>
+  <span class="block md:hidden"> Edit the activity </span>
+  <span class="block md:hidden">
+    {{ activity.name }} ({{ activity.startDate | date : "dd MMM yyyy" }})
+  </span>
+</h1>
+
+<h2 class="text-custom-orange text-3xl mb-8 border-b border-custom-orange">
+  Review information
+</h2>
+
+<form #activityForm="ngForm">
+  <div class="mb-6">
+    <div class="block">
+      <label
+        for="score"
+        class="inline-block border-b border-white mb-2 text-xl font-medium text-white"
+        >Rating of the activity</label
+      >
+    </div>
+    <div class="sm:flex">
+      <app-rating
+        [filledStars]="rating"
+        (starClicked)="updateRating($event)"
+      ></app-rating>
+      <p class="text-white ml-1 sm:ml-3 leading-10 text-xl">{{ rating }} out of 5</p>
+      <button
+      type="button"
+      class="text-white ring-2 sm:ml-3 mt-2 sm:mt-0 ring-custom-orange enabled:hover:bg-custom-orange font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-75"
+      (click)="resetRating()"
+    >
+      Reset rating
+    </button>
+    </div>
+  </div>
+  <div class="mb-6">
+    <label
+    for="description"
+    class="block mb-2 text-xl font-medium text-white"
+    >Review of the activity</label
+  >
+    <textarea
+      id="review"
+      name="review"
+      rows="4"
+      class="block p-2.5 w-full text-sm rounded-lg border bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+      placeholder="Write your thoughts about the activity..."
+      [(ngModel)]="activity.review"
+      #description="ngModel"
+    ></textarea>
+  </div>
+  <button
+    type="button"
+    [disabled]="!activityForm.form.valid || isSubmitted"
+    class="text-white ring-2 sm:mr-2 mb-3 md:mb-0 ring-custom-orange enabled:hover:bg-custom-orange font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-75"
+    (click)="onSubmitValidate()"
+  >
+    Save changes
+  </button>
+  <button
+    type="button"
+    class="text-white ring-2 sm:ml-2 ring-custom-orange enabled:hover:bg-custom-orange font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-75"
+    (click)="goToCalendar()"
+  >
+    Back
+  </button>
+</form>

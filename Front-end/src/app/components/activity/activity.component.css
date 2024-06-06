@@ -1,0 +1,14 @@
+.my-pagination::ng-deep .ngx-pagination .current {
+    background: #e66462  !important;
+    border-radius: 25%;
+}
+
+.my-pagination::ng-deep .ngx-pagination a:not(.current) {
+    color: white;
+    border-radius: 25%;
+    /* Add any additional styles for unselected page numbers */
+}
+
+.my-pagination::ng-deep .ngx-pagination a:not(.current):hover {
+    background-color: #ea7a78;
+}

@@ -1,0 +1,45 @@
+<!-- Weather Card for Current Weather only!! -->
+<div class="bg-custom-table-data text-white p-4 pt-2 rounded-lg shadow-md w-[200px] mt-6">
+  <ng-container *ngIf="weather">
+    
+    <!-- Center the DayOfWeek, weather icon, and description-->
+    <div class="flex flex-col items-center">
+      <h3 class="text-md font-semibold">{{ weather?.currentDate }}</h3>
+      <!-- Display the icon based on the mapped icon code -->
+      <fa-icon matTooltip="{{ weather?.description }}" matTooltipPosition="above" class="fa-3x mb-1" *ngIf="weather.icon" [icon]="weather.icon"></fa-icon>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 text-sm">
+      <!-- Display temperature and min temperature -->
+      <div matTooltip="temperature" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faTemperature"></fa-icon>
+        <span class="font-semibold">{{ weather?.temp }} °C</span>
+      </div>
+
+      <div matTooltip="minimum temperature" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faTemperatureArrowDown"></fa-icon>
+        <span class="font-semibold">{{ weather?.mintemp }} °C</span>
+      </div>
+
+      <!-- Display humidity and max temperature -->
+      <div matTooltip="humidity" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faDroplet"></fa-icon>
+        <span class="font-semibold">{{ weather?.humidity }}%</span>
+      </div>
+
+      <div matTooltip="maximum temperature" matTooltipPosition="above" class="flex justify-between">
+        <fa-icon [icon]="faTemperatureArrowUp"></fa-icon>
+        <span class="font-semibold">{{ weather?.maxtemp }} °C</span>
+      </div>
+    </div>
+
+    <!-- Display wind information -->
+    <div class="flex justify-between mt-2 items-center text-sm">
+      <fa-icon matTooltip="wind speed/degree" matTooltipPosition="above" [icon]="faWind"></fa-icon>
+      <span matTooltip="wind speed" matTooltipPosition="above" class="font-semibold ml-1">{{ weather?.windspeed }} m/s</span>
+      <!-- We add 135 to the winddegree because the Font Awesome icon is tilted by default 45 degree to the right + 180 degrees so we can flip and poit to the direction the wind is going -->
+      <fa-icon matTooltip="wind degree {{ weather?.winddegree }}°" matTooltipPosition="above" [icon]="faLocationArrow" class="fa-rotate-by" style="--fa-rotate-angle: {{ weather?.winddegree + 135 }}deg;"></fa-icon>
+    </div>
+
+  </ng-container>
+</div>

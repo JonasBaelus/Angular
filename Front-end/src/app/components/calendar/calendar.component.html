@@ -1,0 +1,229 @@
+<div class="mx-6">
+  @if (isLoading) {
+  <app-page-loader></app-page-loader>
+  } @else {
+  <!--  Small screen-->
+  <div class="lg:hidden">
+    <!--    Title-->
+    <div class="mt-5 text-center text-custom-orange font-bold">
+      <h1 class="text-4xl">
+        {{ trip.name }}
+      </h1>
+      <h2 class="text-3xl mt-2">
+        {{ trip.startDate | date : "d/MM/YY" }} -
+        {{ trip.endDate | date : "d/MM/YY" }}
+      </h2>
+    </div>
+    <!--    vertical timeline-->
+    <div class="my-10 flex justify-center ml-10 pl-10 overflow-hidden">
+      <ol class="relative mt-5">
+        @for (date of dates; track date.date) {
+        <li class="mb-10 ms-10">
+          <span
+            class="absolute border-s-2 h-full -start-[0.075rem]"
+            [ngClass]="{
+              'border-gray-700': date.status !== 'Past',
+              'border-custom-orange': date.status === 'Past'
+            }"
+          ></span>
+          <span
+            class="absolute flex items-center justify-center w-8 h-8 rounded-full -start-4 ring-8 bg-custom-orange ring-custom-orange"
+          >
+            @switch (date.status) { @case ("Past") {
+            <fa-icon class="fa-solid text-white" [icon]="faPast"></fa-icon>
+            } @case ("Present") {
+            <fa-icon class="fa-solid text-white" [icon]="faPresent"></fa-icon>
+            } @case ("Future") {
+            <fa-icon class="fa-solid text-white" [icon]="faFuture"></fa-icon>
+            } }
+          </span>
+          <div
+            [ngClass]="{
+              'opacity-30': date.activities.length === 0
+            }"
+          >
+            <h3 class="flex items-center mb-1 text-lg font-semibold text-white">
+              {{ date.date | date : "E, MMM dd" }}
+              @if (date.status === "Present") {
+              <span
+                class="text-sm font-medium me-2 px-2.5 py-1 rounded bg-blue-900 text-blue-300 ms-3"
+                >Today</span
+              >}
+            </h3>
+            <ol class="fa-ul ml-5 mt-4">
+              @for (activity of date.activities; track activity) {
+              <li
+                class="mb-4 text-base text-white hover:underline cursor-pointer"
+                [ngClass]="{
+                  'font-normal': !isNow(activity.startDate, activity.endDate),
+                  'font-bold': isNow(activity.startDate, activity.endDate)
+                }"
+                (click)="openModal(activity.tripActivityId, date.status)"
+              >
+                <span class="fa-li">
+                  <fa-icon
+                    class="fa-solid text-white fa-md"
+                    [icon]="getIcon(activity.activity.name)"
+                  >
+                  </fa-icon>
+                </span>
+                {{ activity.startDate | date : "H:mm" }} -
+                {{ activity.endDate | date : "H:mm" }}: {{ activity.name }}
+              </li>
+              } @empty {
+              <li class="mb-4 text-base text-gray-400">
+                <span class="fa-li">
+                  <fa-icon
+                    class="fa-solid text-gray-400 fa-md"
+                    [icon]="faQuestion"
+                  >
+                  </fa-icon>
+                </span>
+                No planned activities
+                <span *ngIf="date.status !== 'Past'">yet</span>
+              </li>
+              } @if (date.status !== 'Past' && !isPublic) {
+              <li
+                class="mb-4 text-base font-normal text-gray-400 cursor-pointer hover:underline"
+                (click)="add(date.date)"
+              >
+                <span class="fa-li"
+                  ><fa-icon
+                    class="fa-solid text-gray-400 fa-md"
+                    [icon]="faPlus"
+                  ></fa-icon
+                ></span>
+                Add activity
+              </li>
+              }
+            </ol>
+          </div>
+        </li>
+        }
+      </ol>
+    </div>
+  </div>
+
+  <!--  Big screen-->
+  <div class="hidden lg:block">
+    <!--    Title-->
+    <h1 class="mt-5 text-center text-4xl text-custom-orange font-bold">
+      {{ trip.name }} ({{ trip.startDate | date : "d/MM/YYYY" }} -
+      {{ trip.endDate | date : "d/MM/YYYY" }})
+    </h1>
+    <!--    horizontal timeline-->
+    <ol class="mt-10 grid lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      @for (date of dates; track date.date) {
+      <li class="relative mb-24">
+        <div class="flex items-center">
+          <div
+            class="z-10 flex items-center justify-center w-6 h-6 bg-custom-orange rounded-full ring-8 ring-custom-orange shrink-0"
+          >
+            @switch (date.status) { @case ("Past") {
+            <fa-icon class="fa-solid text-white" [icon]="faPast"></fa-icon>
+            } @case ("Present") {
+            <fa-icon class="fa-solid text-white" [icon]="faPresent"></fa-icon>
+            } @case ("Future") {
+            <fa-icon class="fa-solid text-white" [icon]="faFuture"></fa-icon>
+            } }
+          </div>
+          <div
+            class="flex w-full h-0.5"
+            [ngClass]="{
+              'bg-gray-700': date.status !== 'Past',
+              'bg-custom-orange': date.status === 'Past'
+            }"
+          ></div>
+        </div>
+        <div
+          class="mt-5"
+          [ngClass]="{
+            'opacity-50': date.activities.length === 0
+          }"
+        >
+          <h3 class="text-lg font-semibold text-white">
+            {{ date.date | date : "E, MMMM dd" }}
+            @if (date.status === "Present") {
+            <span
+              class="text-sm font-medium me-2 px-2.5 py-1 rounded bg-blue-900 text-blue-300 ms-3"
+              >Today</span
+            >}
+          </h3>
+          <ol class="fa-ul ml-5 mt-4 self-start">
+            @for (activity of date.activities; track activity) {
+            <li
+              class="mb-4 mr-10 text-base text-white wrapped-word hover:underline cursor-pointer break-words"
+              [ngClass]="{
+                'font-normal': !isNow(activity.startDate, activity.endDate),
+                'font-bold': isNow(activity.startDate, activity.endDate)
+              }"
+              (click)="openModal(activity.tripActivityId, date.status)"
+            >
+              <span class="fa-li">
+                <fa-icon
+                  class="fa-solid text-white fa-md"
+                  [icon]="getIcon(activity.activity.name)"
+                >
+                </fa-icon>
+              </span>
+              {{ activity.startDate | date : "H:mm" }} -
+              {{ activity.endDate | date : "H:mm" }}: {{ activity.name }}
+            </li>
+            } @empty {
+            <li class="mb-4 text-base text-gray-400">
+              <span class="fa-li">
+                <fa-icon
+                  class="fa-solid text-gray-400 fa-md"
+                  [icon]="faQuestion"
+                >
+                </fa-icon>
+              </span>
+              No planned activities
+              <span *ngIf="date.status !== 'Past'">yet</span>
+            </li>
+            } @if (date.status !== 'Past' && !isPublic) {
+            <li
+              class="mb-4 text-base font-normal text-gray-400 cursor-pointer hover:underline"
+              (click)="add(date.date)"
+            >
+              <span class="fa-li"
+                ><fa-icon
+                  class="fa-solid text-gray-400 fa-md"
+                  [icon]="faPlus"
+                ></fa-icon
+              ></span>
+              Add activity
+            </li>
+            }
+          </ol>
+        </div>
+      </li>
+      }
+    </ol>
+  </div>
+
+  } @if (isModalOpen) {
+  <app-calendar-detail-modal
+    [activity]="activity"
+    [status]="modalDayStatus"
+    [isPublic]="isPublic"
+    (close)="closeModal()"
+    (delete)="handleDelete()"
+  ></app-calendar-detail-modal>
+  } @switch (mode) { @case ('add') {
+  <app-toast
+    [showSuccessToast]="true"
+    [message]="'Activity added to trip!'"
+  ></app-toast>
+  } @case ('edit') {
+  <app-toast
+    [showSuccessToast]="true"
+    [message]="'Saved changes to activity!'"
+  ></app-toast>
+  } @case ('delete') {
+  <app-toast
+    [showSuccessToast]="true"
+    [message]="'Deleted activity!'"
+  ></app-toast>
+  } }
+</div>

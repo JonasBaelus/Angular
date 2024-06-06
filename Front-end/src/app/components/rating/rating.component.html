@@ -1,0 +1,10 @@
+<div class="inline-block">
+  @for(i of [1, 2, 3, 4, 5]; track i) {
+    <app-star
+    [filled]="i <= filledStars"
+    (starClicked)="rate(i)"
+    (starHovered)="hover(i)"
+    [isEdit]="isEdit"
+    ></app-star>
+  }
+</div>

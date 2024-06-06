@@ -1,0 +1,160 @@
+<h1 class="text-custom-orange text-4xl mb-8 text-center">
+  @if (mode === 'add') {
+  <span class="hidden md:block"
+    >Add an activity on {{ date | date : "dd MMMM yyyy" }}</span
+  >
+  <span class="block md:hidden">Add an activity on</span>
+  <span class="block md:hidden">{{ date | date : "dd MMM yyyy" }}</span>
+  } @else {
+  <span class="hidden md:block">
+    Edit the activity: {{ activityName }} ({{
+      activity.startDate | date : "dd MMM yyyy"
+    }})
+  </span>
+  <span class="block md:hidden"> Edit the activity </span>
+  <span class="block md:hidden">
+    {{ activityName }} ({{ activity.startDate | date : "dd MMM yyyy" }})
+  </span>
+  }
+</h1>
+
+<h2 class="text-custom-orange text-3xl mb-8 border-b border-custom-orange">
+  General information
+</h2>
+<form #activityForm="ngForm">
+  <div class="mb-6">
+    <label for="name" class="block mb-2 text-xl font-medium text-white"
+      >Activity name</label
+    >
+    <input
+      type="name"
+      id="name"
+      name="name"
+      class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+      placeholder="Activity name"
+      required
+      [(ngModel)]="activity.name"
+      #name="ngModel"
+    />
+    <div [hidden]="name.valid || name.pristine" class="text-red-500 mt-2">
+      Name is required
+    </div>
+  </div>
+  <div class="mb-6">
+    <label for="description" class="block mb-2 text-xl font-medium text-white"
+      >Activity description</label
+    >
+    <textarea
+      id="description"
+      name="description"
+      rows="4"
+      class="block p-2.5 w-full text-sm rounded-lg border bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+      placeholder="Write what you will do on the activity..."
+      [(ngModel)]="activity.description"
+      #description="ngModel"
+    ></textarea>
+  </div>
+  <div class="md:grid md:grid-cols-2 md:gap-2">
+    <div class="mb-6">
+      <label for="startTime" class="block mb-2 text-xl font-medium text-white"
+        >Start time</label
+      >
+      <input
+        type="time"
+        id="startTime"
+        name="startTime"
+        class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+        required
+        [(ngModel)]="startTime"
+        #start="ngModel"
+      />
+      <div [hidden]="start.valid || start.pristine" class="text-red-500 mt-2">
+        Start time is required
+      </div>
+      <div [hidden]="!isTimeError" class="text-red-500 mt-2">
+        The activity can't end before it has started
+      </div>
+    </div>
+    <div class="mb-6">
+      <label for="endTime" class="block mb-2 text-xl font-medium text-white"
+        >End time</label
+      >
+      <input
+        type="time"
+        id="endTime"
+        name="endTime"
+        class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+        required
+        [(ngModel)]="endTime"
+        #end="ngModel"
+      />
+      <div [hidden]="end.valid || end.pristine" class="text-red-500 mt-2">
+        End time is required
+      </div>
+    </div>
+    <div class="mb-6">
+      <label for="price" class="block mb-2 text-xl font-medium text-white"
+        >Participants</label
+      >
+      <input
+        type="number"
+        id="participants"
+        name="participants"
+        min="0"
+        class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+        [(ngModel)]="activity.participants"
+        #participants="ngModel"
+      />
+      <div [hidden]="!isParticipantsError" class="text-red-500 mt-2">
+        At least 1 person needs to participate in the activity
+      </div>
+    </div>
+    <div class="mb-6">
+      <label
+        for="activityTypeId"
+        class="block mb-2 text-xl font-medium text-white"
+        >Activity type</label
+      >
+      <select
+        name="activityTypeId"
+        id="activityTypeId"
+        class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+        [(ngModel)]="activityTypeId"
+      >
+        <option value="0" disabled selected>Select an activity type</option>
+        <option *ngFor="let type of activityTypes" [value]="type.activityId">
+          {{ type.name }}
+        </option>
+      </select>
+      <div [hidden]="!isActivityTypeError" class="text-red-500 mt-2">
+        Choose an activity type
+      </div>
+    </div>
+  </div>
+  @if(mode === "add") {
+  <button
+    type="button"
+    [disabled]="!activityForm.form.valid || isSubmitted"
+    class="text-white ring-2 mr-2 mb-3 md:mb-0 ring-custom-orange enabled:hover:bg-custom-orange font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-75"
+    (click)="onSubmitValidate()"
+  >
+    Add activity
+  </button>
+  } @else {
+  <button
+    type="button"
+    [disabled]="!activityForm.form.valid || isSubmitted"
+    class="text-white ring-2 sm:mr-2 mb-3 md:mb-0 ring-custom-orange enabled:hover:bg-custom-orange font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-75"
+    (click)="onSubmitValidate()"
+  >
+    Save changes
+  </button>
+  }
+  <button
+    type="button"
+    class="text-white ring-2 sm:ml-2 ring-custom-orange enabled:hover:bg-custom-orange font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-75"
+    (click)="goToCalendar()"
+  >
+    Back
+  </button>
+</form>
